@@ -1,49 +1,58 @@
 const express = require("express");
 const users = express.Router();
 const usersArray = require("../models/users.js");
+const { getAllUsers, getUser, createUser, deleteUser } = require("../queries/users")
 
 const { validateUrl } = require('../models/validations')
 
 
+// INDEX
+users.get("/", async (req, res) => {
+
+    try {
+        const allUsers = await getAllUsers();
+        console.log(allUsers)
+        res.status(200).json(allUsers);
+    } catch(err) {
+        res.status(500).json({ error: err.message});
+    }
+
+});
+
 // SHOW
-users.get("/", (req, res) => {
-    res.json(usersArray);
-});
+users.get("/:uuid", async (req, res) => {
+    const { uuid } = req.params;
 
-// SHOW BY INDEX
-users.get("/:index", (req, res) => {
-    const { index } = req.params
-
-    if (usersArray[index]) {
-        res.status(200).json(usersArray[index])
-    } else {
-        res.status(400).json({ error: "User not found. Check your index and try again"})
-    }
-});
-
-// SHOW BY NAME
-users.get("/:first_name", (req, res) => {
-    const { first_name } = req.params;
-    let searchedUser;
-
-    for (const user of usersArray) {
-        if (user.first_name === first_name) {
-            searchedUser = user;
-        }
-    }
-    if (searchedUser) {
-        res.status(200).json(searchedUser);
-    } else {
-        res.status(404).send("Could not find user " + first_name);
+    try {
+        const user = await getUser(uuid);
+        res.status(200).json(user);
+    } catch(err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
 // CREATE
-users.post("/", validateUrl, (req, res) => {
-    console.log(req.body);
+users.post("/", async (req, res) => {
+    const user = req.body;
 
-    usersArray.push(req.body)
-    res.json(usersArray[usersArray.length - 1])
+    try {
+        const newUser = await createUser(user);
+        res.status(200).json(newUser);
+    } catch(err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE
+users.delete("/:uuid", async (req, res) => {
+    const { uuid } = req.params;
+
+    try {
+        const deletedUser = await deleteUser(uuid);
+        res.status(200).json(deletedUser);
+    } catch(err) {
+        res.status(400).json({ error: err.message });
+    }
 });
 
 // DELETE

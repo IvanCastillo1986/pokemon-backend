@@ -9,3 +9,10 @@ CREATE TABLE users (
     email TEXT,
     uuid TEXT
 );
+
+CREATE TABLE decks (
+    id SERIAL PRIMARY KEY,
+    user_id VARCHAR,
+    pokemon_id INT
+);
+

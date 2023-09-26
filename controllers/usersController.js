@@ -2,6 +2,7 @@ const express = require("express");
 const users = express.Router();
 const usersArray = require("../models/users.js");
 const { getAllUsers, getUser, createUser, deleteUser } = require("../queries/users")
+const { createDeck, deleteDeck } = require("../queries/decks.js")
 
 const { validateUrl } = require('../models/validations')
 
@@ -11,7 +12,6 @@ users.get("/", async (req, res) => {
 
     try {
         const allUsers = await getAllUsers();
-        console.log(allUsers)
         res.status(200).json(allUsers);
     } catch(err) {
         res.status(500).json({ error: err.message});
@@ -33,11 +33,25 @@ users.get("/:uuid", async (req, res) => {
 
 // CREATE
 users.post("/", async (req, res) => {
-    const user = req.body;
+    // This should not only create a new user, but also create a new deck with random Pokemon for that user
+    const user = req.body[0];
+    const starterDeckArr = req.body[1];
+    console.log(starterDeckArr)
+    const pokemonDeckArr = []
+
+    // here we add each pokemon from starterDeckArr into Decks table
+    try {
+        for (let pokemonId of starterDeckArr) {
+            const pokemonAddedToDeck = await createDeck(user.uuid, pokemonId);
+            pokemonDeckArr.push(pokemonAddedToDeck);
+        }
+    } catch(err) {
+        res.status(500).json({ errorAddingNewDeck: err.message });
+    }
 
     try {
         const newUser = await createUser(user);
-        res.status(200).json(newUser);
+        res.status(200).json({ newUser: newUser, pokemonDeckArr });
     } catch(err) {
         res.status(400).json({ error: err.message });
     }
@@ -47,7 +61,12 @@ users.post("/", async (req, res) => {
 users.delete("/:uuid", async (req, res) => {
     const { uuid } = req.params;
 
+    // will also delete every deck attached to uuid
+
+
     try {
+        await deleteDeck(uuid);
+
         const deletedUser = await deleteUser(uuid);
         res.status(200).json(deletedUser);
     } catch(err) {
@@ -56,31 +75,31 @@ users.delete("/:uuid", async (req, res) => {
 });
 
 // DELETE
-users.delete("/:index", (req, res, next) => {
-    const { index } = req.params
-    console.log(`User ${index} has just been deleted`)
-    const deletedUser = usersArray.splice(index, 1)
+// users.delete("/:index", (req, res, next) => {
+//     const { index } = req.params
+//     console.log(`User ${index} has just been deleted`)
+//     const deletedUser = usersArray.splice(index, 1)
 
-    if (index) {
-        res.json(deletedUser)
-    } else {
-        res.status(400).json({ error: "Student not found" })
-    }
-});
+//     if (index) {
+//         res.json(deletedUser)
+//     } else {
+//         res.status(400).json({ error: "Student not found" })
+//     }
+// });
 
 // UPDATE
-users.put("/:index", (req, res) => {
-    const {index} = req.params
+// users.put("/:index", (req, res) => {
+//     const {index} = req.params
     
-    if (usersArray[index]) {
-        const updatedUser = req.body
-        usersArray[index] = updatedUser
+//     if (usersArray[index]) {
+//         const updatedUser = req.body
+//         usersArray[index] = updatedUser
         
-        res.status(200).json(usersArray[index])
-    } else {
-        res.status(400).json({ error: 'student index not found'})
-    }
-});
+//         res.status(200).json(usersArray[index])
+//     } else {
+//         res.status(400).json({ error: 'student index not found'})
+//     }
+// });
 
 
 module.exports = users;

@@ -3,6 +3,7 @@ const express = require('express');
 const pokemon = require('./models/pokemon');
 const pokemonController = require('./controllers/pokemonController');
 const usersController = require("./controllers/usersController");
+const decksController = require("./controllers/decksController");
 
 // CONFIGURATION
 const app = express();
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.json()); // This is Express's built-in method to parse incoming JSON
 app.use("/pokemon", pokemonController);
 app.use("/users", usersController);
+app.use("/decks", decksController);
 
 // Routes are like event listeners in the browser
 // ROUTES

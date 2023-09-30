@@ -1,5 +1,6 @@
 // DEPENDENCIES
 const express = require('express');
+const cors = require("cors");
 const pokemon = require('./models/pokemon');
 const pokemonController = require('./controllers/pokemonController');
 const usersController = require("./controllers/usersController");
@@ -9,6 +10,7 @@ const decksController = require("./controllers/decksController");
 const app = express();
 
 app.use(express.json()); // This is Express's built-in method to parse incoming JSON
+app.use(cors());
 app.use("/pokemon", pokemonController);
 app.use("/users", usersController);
 app.use("/decks", decksController);
@@ -21,7 +23,7 @@ app.get("/", (req, res) => {
 
 app.get("/pokemon/awesome", (req, res) => {
     res.send(`
-    <h1>Rocks are awesome!</h1>
+    <h1>Pokemon are awesome!</h1>
     <h2>(You can totally write HTML into an Express route if you use backticks, and don't even need to use closing tag) 
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bismuth_crystal_macro.jpg/800px-Bismuth_crystal_macro.jpg" >
   `);

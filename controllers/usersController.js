@@ -36,8 +36,7 @@ users.post("/", async (req, res) => {
     // This should not only create a new user, but also create a new deck with random Pokemon for that user
     const user = req.body[0];
     const starterDeckArr = req.body[1];
-    console.log(starterDeckArr)
-    const pokemonDeckArr = []
+    let pokemonDeckArr = [];
 
     // here we add each pokemon from starterDeckArr into Decks table
     try {
@@ -51,9 +50,10 @@ users.post("/", async (req, res) => {
 
     try {
         const newUser = await createUser(user);
+        console.log(newUser)
         res.status(200).json({ newUser: newUser, pokemonDeckArr });
     } catch(err) {
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ errorCreatingUser: err.message });
     }
 });
 

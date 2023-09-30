@@ -7,7 +7,8 @@ CREATE DATABASE pokemon_dev;
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email TEXT,
-    uuid TEXT
+    uuid TEXT,
+    has_chosen_starter BOOLEAN DEFAULT false
 );
 
 CREATE TABLE decks (

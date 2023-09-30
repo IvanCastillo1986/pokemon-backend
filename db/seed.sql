@@ -1,9 +1,9 @@
 \c pokemon_dev;
 
 INSERT INTO users (
-    email, uuid
+    email, uuid, has_chosen_starter
 ) VALUES 
-('icastillo@live.com', 'lLpzAPioUdd7oZtdfzDiiM2iku73')
+('icastillo@live.com', 'lLpzAPioUdd7oZtdfzDiiM2iku73', false)
 ;
 
 INSERT INTO decks (

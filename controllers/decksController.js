@@ -1,6 +1,6 @@
 const express = require("express");
 const decks = express.Router();
-const { getAllDecks, getDeck, createDeck, deleteDecks } = require("../queries/decks")
+const { getAllDecks, getDeck, createDeck, deleteDeck } = require("../queries/decks")
 
 
 // INDEX
@@ -28,10 +28,10 @@ decks.get("/:uuid", async (req, res) => {
 
 // CREATE
 decks.post("/", async (req, res) => {
-    const deck = req.body;
+    const [uuid, pokemonId] = req.body;
 
     try {
-        const newDeck = await createDeck(deck);
+        const newDeck = await createDeck(uuid, pokemonId);
         res.status(200).json(newDeck);
     } catch(err) {
         res.status(400).json({ error: err.message });

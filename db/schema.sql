@@ -15,6 +15,8 @@ CREATE TABLE decks (
     id SERIAL PRIMARY KEY,
     user_id VARCHAR,
     pokemon_id INT
+    -- exp INT
+    -- lvl INT
 );
 
 CREATE TABLE pokemon (
@@ -30,8 +32,8 @@ CREATE TABLE pokemon (
     type2 VARCHAR,
     move1 VARCHAR,
     move2 VARCHAR,
-    exp INT,
-    lvl INT,
+    exp INT, -- will soon be disregarded
+    lvl INT, -- will soon be disregarded
     front_img TEXT,
     rear_img TEXT
 );

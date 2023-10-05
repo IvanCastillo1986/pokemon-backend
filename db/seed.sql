@@ -3,17 +3,17 @@
 INSERT INTO users (
     email, uuid, has_chosen_starter
 ) VALUES 
-('icastillo@live.com', 'lLpzAPioUdd7oZtdfzDiiM2iku73', false)
+('icastillo@live.com', '7XzFvOUVS4eQHGI8ClxNbN7qY7b2', false)
 ;
 
 INSERT INTO decks (
-    user_id, pokemon_id
+    user_id, pokemon_id --exp, lvl
 ) VALUES 
-('lLpzAPioUdd7oZtdfzDiiM2iku73', 35),
-('lLpzAPioUdd7oZtdfzDiiM2iku73', 46),
-('lLpzAPioUdd7oZtdfzDiiM2iku73', 10),
-('lLpzAPioUdd7oZtdfzDiiM2iku73', 113),
-('lLpzAPioUdd7oZtdfzDiiM2iku73', 21)
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 35),
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 46),
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 10),
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 111),
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 21)
 ;
 
 INSERT INTO pokemon (

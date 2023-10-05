@@ -11,6 +11,12 @@ const getDeck = async (uuid) => {
     return oneDeck;
 };
 
+const getDecksById = async (uuid) => {
+    const userDeck = await db.any("SELECT * FROM decks WHERE user_id = $1", uuid);
+    return userDeck;
+};
+
+
 // gets used in usersController when creating a new user. 
 // creates a new deck pokemon in Decks table for each pokemonId in array
 const createDeck = async (user_id, pokemon_id) => {
@@ -27,4 +33,5 @@ const deleteDeck = async (uuid) => {
 };
 
 
-module.exports = { getAllDecks, getDeck, createDeck, deleteDeck };
+
+module.exports = { getAllDecks, getDeck, getDecksById, createDeck, deleteDeck };

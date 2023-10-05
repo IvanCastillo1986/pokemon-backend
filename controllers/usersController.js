@@ -1,8 +1,8 @@
 const express = require("express");
 const users = express.Router();
-const usersArray = require("../models/users.js");
 const { getAllUsers, getUser, createUser, deleteUser } = require("../queries/users")
-const { createDeck, deleteDeck } = require("../queries/decks.js")
+const { getDecksById, createDeck, deleteDeck } = require("../queries/decks.js")
+const { getAllPokemonInDeck } = require("../queries/pokemon.js")
 
 const { validateUrl } = require('../models/validations')
 
@@ -22,12 +22,21 @@ users.get("/", async (req, res) => {
 // SHOW
 users.get("/:uuid", async (req, res) => {
     const { uuid } = req.params;
+    let userDeck;
+    let userPokemon;
+
+    try {
+        userDeck = await getDecksById(uuid);
+        userPokemon = await getAllPokemonInDeck(uuid);
+    } catch(err) {
+        res.status(500).json({ errorGettingDecksOrPokemonById: err.message });
+    }
 
     try {
         const user = await getUser(uuid);
-        res.status(200).json(user);
+        res.status(200).json({ user, userDeck, userPokemon });
     } catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ errorGettingUser: err.message });
     }
 });
 
@@ -50,8 +59,8 @@ users.post("/", async (req, res) => {
 
     try {
         const newUser = await createUser(user);
-        console.log(newUser)
-        res.status(200).json({ newUser: newUser, pokemonDeckArr });
+        const userPokemon = await getAllPokemonInDeck(newUser.uuid);
+        res.status(200).json({ user: newUser, userDeck: pokemonDeckArr, userPokemon });
     } catch(err) {
         res.status(400).json({ errorCreatingUser: err.message });
     }

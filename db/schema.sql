@@ -14,9 +14,9 @@ CREATE TABLE users (
 CREATE TABLE decks (
     id SERIAL PRIMARY KEY,
     user_id VARCHAR,
-    pokemon_id INT
-    -- exp INT
-    -- lvl INT
+    pokemon_id INT,
+    exp INT DEFAULT 0, -- new properties, will be added to pokemon objects in front-end
+    lvl INT DEFAULT 1 -- new properties, will be added back to decks row in back-end
 );
 
 CREATE TABLE pokemon (
@@ -32,8 +32,8 @@ CREATE TABLE pokemon (
     type2 VARCHAR,
     move1 VARCHAR,
     move2 VARCHAR,
-    exp INT, -- will soon be disregarded
-    lvl INT, -- will soon be disregarded
+    -- exp INT, -- will soon be disregarded
+    -- lvl INT, -- will soon be disregarded
     front_img TEXT,
     rear_img TEXT
 );

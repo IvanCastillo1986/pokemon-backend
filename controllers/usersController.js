@@ -22,11 +22,9 @@ users.get("/", async (req, res) => {
 // SHOW
 users.get("/:uuid", async (req, res) => {
     const { uuid } = req.params;
-    let userDeck;
     let userPokemon;
 
     try {
-        userDeck = await getDecksById(uuid);
         userPokemon = await getAllPokemonInDeck(uuid);
     } catch(err) {
         res.status(500).json({ errorGettingDecksOrPokemonById: err.message });
@@ -34,7 +32,7 @@ users.get("/:uuid", async (req, res) => {
 
     try {
         const user = await getUser(uuid);
-        res.status(200).json({ user, userDeck, userPokemon });
+        res.status(200).json({ user, userPokemon });
     } catch(err) {
         res.status(500).json({ errorGettingUser: err.message });
     }
@@ -42,12 +40,11 @@ users.get("/:uuid", async (req, res) => {
 
 // CREATE
 users.post("/", async (req, res) => {
-    // This should not only create a new user, but also create a new deck with random Pokemon for that user
+    // This not only creates a new user, but also create a new deck with random Pokemon for that user
     const user = req.body[0];
     const starterDeckArr = req.body[1];
     let pokemonDeckArr = [];
 
-    // here we add each pokemon from starterDeckArr into Decks table
     try {
         for (let pokemonId of starterDeckArr) {
             const pokemonAddedToDeck = await createDeck(user.uuid, pokemonId);
@@ -57,10 +54,16 @@ users.post("/", async (req, res) => {
         res.status(500).json({ errorAddingNewDeck: err.message });
     }
 
+
     try {
         const newUser = await createUser(user);
         const userPokemon = await getAllPokemonInDeck(newUser.uuid);
-        res.status(200).json({ user: newUser, userDeck: pokemonDeckArr, userPokemon });
+
+        // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon
+        // deck:  {id: 1, user_id: "7XzFvOUVS4eQHGI8ClxNbN7qY7b2", pokemon_id: 10, exp: 0, lvl: 1}
+        // pokemon: {id:10, name: "Caterpie"...} => {id:10, name: "Caterpie"..., exp: 0, lvl: 1}
+
+        res.status(200).json({ user: newUser, userPokemon });
     } catch(err) {
         res.status(400).json({ errorCreatingUser: err.message });
     }
@@ -71,44 +74,15 @@ users.delete("/:uuid", async (req, res) => {
     const { uuid } = req.params;
 
     // will also delete every deck attached to uuid
-
-
     try {
-        await deleteDeck(uuid);
-
+        const deletedDeck = await deleteDeck(uuid);
         const deletedUser = await deleteUser(uuid);
-        res.status(200).json(deletedUser);
+        res.status(200).json({ deletedUser, deletedDeck });
     } catch(err) {
         res.status(400).json({ error: err.message });
     }
 });
 
-// DELETE
-// users.delete("/:index", (req, res, next) => {
-//     const { index } = req.params
-//     console.log(`User ${index} has just been deleted`)
-//     const deletedUser = usersArray.splice(index, 1)
-
-//     if (index) {
-//         res.json(deletedUser)
-//     } else {
-//         res.status(400).json({ error: "Student not found" })
-//     }
-// });
-
-// UPDATE
-// users.put("/:index", (req, res) => {
-//     const {index} = req.params
-    
-//     if (usersArray[index]) {
-//         const updatedUser = req.body
-//         usersArray[index] = updatedUser
-        
-//         res.status(200).json(usersArray[index])
-//     } else {
-//         res.status(400).json({ error: 'student index not found'})
-//     }
-// });
 
 
 module.exports = users;

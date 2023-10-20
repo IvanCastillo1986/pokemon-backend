@@ -1,9 +1,9 @@
 \c pokemon_dev;
 
 INSERT INTO users (
-    email, uuid, has_chosen_starter
+    email, uuid, has_chosen_starter, wins, losses
 ) VALUES 
-('icastillo@live.com', '7XzFvOUVS4eQHGI8ClxNbN7qY7b2', false)
+('icastillo@live.com', '7XzFvOUVS4eQHGI8ClxNbN7qY7b2', false, 0, 0)
 ;
 
 INSERT INTO decks (
@@ -11,7 +11,7 @@ INSERT INTO decks (
 ) VALUES 
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 35, 152, 3),
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 46, 0, 1),
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 10, 0, 1),
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 100, 0, 1),
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 111, 0, 1),
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 21, 0, 1)
 ;
@@ -51,7 +51,7 @@ INSERT INTO pokemon (
 ),
 (
     'Squirtle', 78, 84, 78, 109, 85, 100, 'water', null, 'bite', 'water-gun',
-    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png',
+    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png'
 ),
 (
@@ -160,7 +160,7 @@ INSERT INTO pokemon (
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/28.png'
 ),
 (
-    'Nidoran-f', 55, 47, 52, 40, 40, 41, 'poison', null, 'scratch', 'double-kick',
+    'Nidoran F', 55, 47, 52, 40, 40, 41, 'poison', null, 'scratch', 'double-kick',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/29.png'
 ),
@@ -175,7 +175,7 @@ INSERT INTO pokemon (
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/31.png'
 ),
 (
-    'Nidoran-m', 46, 57, 40, 40, 40, 50, 'poison', null, 'double-kick', 'horn-attack',
+    'Nidoran M', 46, 57, 40, 40, 40, 50, 'poison', null, 'double-kick', 'horn-attack',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/32.png'
 ),
@@ -625,7 +625,7 @@ INSERT INTO pokemon (
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/121.png'
 ),
 (
-    'Mr-mime', 40, 45, 65, 110, 120, 90, 'psychic', null, 'double-slap', 'psybeam',
+    'Mr Mime', 40, 45, 65, 110, 120, 90, 'psychic', null, 'double-slap', 'psybeam',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/122.png',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/122.png'
 ),
@@ -775,4 +775,3 @@ INSERT INTO pokemon (
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/151.png'
 )
 ;
-

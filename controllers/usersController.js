@@ -1,6 +1,6 @@
 const express = require("express");
 const users = express.Router();
-const { getAllUsers, getUser, createUser, deleteUser } = require("../queries/users")
+const { getAllUsers, getUser, createUser, updateUser, deleteUser } = require("../queries/users")
 const { getDecksById, createDeck, deleteDeck } = require("../queries/decks.js")
 const { getAllPokemonInDeck } = require("../queries/pokemon.js")
 
@@ -66,6 +66,19 @@ users.post("/", async (req, res) => {
         res.status(200).json({ user: newUser, userPokemon });
     } catch(err) {
         res.status(400).json({ errorCreatingUser: err.message });
+    }
+});
+
+// UPDATE
+users.put("/:uuid", async (req, res) => {
+    const { uuid } = req.params;
+    const user = req.body;
+
+    try {
+        const updatedUser = await updateUser(uuid, user);
+        res.status(200).json(updatedUser);
+    } catch(err) {
+        res.status(404).json({ errorUpdatingUser: err.message });
     }
 });
 

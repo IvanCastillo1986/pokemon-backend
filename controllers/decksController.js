@@ -1,6 +1,6 @@
 const express = require("express");
 const decks = express.Router();
-const { getAllDecks, getDeck, createDeck, deleteDeck } = require("../queries/decks")
+const { getAllDecks, getDeck, createDeck, deleteDeck, updateDeck } = require("../queries/decks")
 
 
 // INDEX
@@ -50,6 +50,18 @@ decks.delete("/:uuid", async (req, res) => {
     }
 });
 
+// UPDATE
+decks.put("/:deckId", async (req, res) => {
+    const { deckId } = req.params;
+    const deck = req.body;
+
+    try {
+        const updatedDeck = await updateDeck(deckId, deck);
+        res.status(200).json(updatedDeck);
+    } catch(err) {
+        res.status(500).json({ errorUpdatingDecks: err.message});
+    }
+});
 
 
 module.exports = decks;

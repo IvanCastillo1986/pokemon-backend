@@ -32,6 +32,13 @@ const deleteDeck = async (uuid) => {
     return deletedDeck;
 };
 
+const updateDeck = async (deckId, deck) => {
+    const updatedDeck = await db.one(
+        "UPDATE decks SET user_id=$1, pokemon_id=$2, exp=$3, lvl=$4 WHERE id=$5 RETURNING *",
+        [deck.uuid, deck.pokemon_id, deck.exp, deck.lvl, deckId]
+    );
+    return updatedDeck;
+}
 
 
-module.exports = { getAllDecks, getDeck, getDecksById, createDeck, deleteDeck };
+module.exports = { getAllDecks, getDeck, getDecksById, createDeck, deleteDeck, updateDeck };

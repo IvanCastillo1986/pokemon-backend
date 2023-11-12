@@ -16,6 +16,22 @@ INSERT INTO decks (
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 21, 0, 1)
 ;
 
+INSERT INTO items (
+    item_name, effect, hp_restored, pp_restored, item_desc
+) VALUES 
+('potion', null, 20, null, 'Restores 20 hp'),
+('super potion', null, 50, null, 'Restores 50 hp'),
+('lemonade', null, 80, null, 'Restores 80 hp'),
+('ether', null, null, 10, 'Restores 10 pp')
+;
+
+INSERT INTO user_items (
+    user_id, item_id
+) VALUES 
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 1),
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 4)
+;
+
 INSERT INTO pokemon (
     name, hp, atk, def, special_atk, special_def, speed, type1, type2, move1, move2, front_img, rear_img
 ) VALUES 

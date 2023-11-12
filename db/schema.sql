@@ -21,6 +21,21 @@ CREATE TABLE decks (
     lvl INT DEFAULT 1 -- new properties, will be added back to decks row in back-end
 );
 
+CREATE TABLE items (
+    id SERIAL PRIMARY KEY,
+    item_name VARCHAR,  -- potion, ether, etc.
+    effect VARCHAR, -- for status ailments, i.e. antidote, burn heal, etc.
+    hp_restored INT, -- for potion, lemonade, etc.
+    pp_restored INT, -- for recovering move points, i.e. ether
+    item_desc VARCHAR -- i.e. Potion: restore 20 hp
+);
+
+CREATE TABLE user_items (
+    id SERIAL PRIMARY KEY,
+    user_id VARCHAR,
+    item_id INT
+);
+
 CREATE TABLE pokemon (
     id SERIAL PRIMARY KEY,
     name VARCHAR,

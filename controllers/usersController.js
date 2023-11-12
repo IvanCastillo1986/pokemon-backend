@@ -59,7 +59,7 @@ users.post("/", async (req, res) => {
         const newUser = await createUser(user);
         const userPokemon = await getAllPokemonInDeck(newUser.uuid);
 
-        // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon
+        // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon in front-end
         // deck:  {id: 1, user_id: "7XzFvOUVS4eQHGI8ClxNbN7qY7b2", pokemon_id: 10, exp: 0, lvl: 1}
         // pokemon: {id:10, name: "Caterpie"...} => {id:10, name: "Caterpie"..., exp: 0, lvl: 1}
 
@@ -73,10 +73,18 @@ users.post("/", async (req, res) => {
 users.put("/:uuid", async (req, res) => {
     const { uuid } = req.params;
     const user = req.body;
+    const { getPokemon } = req.query;
 
     try {
-        const updatedUser = await updateUser(uuid, user);
-        res.status(200).json(updatedUser);
+        if (getPokemon) {
+            const updatedUserPokemon = await getAllPokemonInDeck(uuid);
+            const updatedUser = await updateUser(uuid, user);
+            
+            res.status(200).json({ updatedUser, updatedUserPokemon });
+        } else {
+            const updatedUser = await updateUser(uuid, user);
+            res.status(200).json(updatedUser);
+        }
     } catch(err) {
         res.status(404).json({ errorUpdatingUser: err.message });
     }

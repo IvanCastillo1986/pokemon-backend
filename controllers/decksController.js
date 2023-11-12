@@ -54,8 +54,12 @@ decks.delete("/:uuid", async (req, res) => {
 decks.put("/:deckId", async (req, res) => {
     const { deckId } = req.params;
     const deck = req.body;
-
+    const { expAdded } = req.query;
+    
     try {
+        if (expAdded) {
+            deck.exp = deck.exp + Number(expAdded)
+        }
         const updatedDeck = await updateDeck(deckId, deck);
         res.status(200).json(updatedDeck);
     } catch(err) {

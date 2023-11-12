@@ -50,7 +50,7 @@ INSERT INTO pokemon (
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png'
 ),
 (
-    'Squirtle', 78, 84, 78, 109, 85, 100, 'water', null, 'bite', 'water-gun',
+    'Squirtle', 44, 48, 65, 50, 64, 43, 'water', null, 'bite', 'water-gun',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png',
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png'
 ),

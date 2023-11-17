@@ -6,6 +6,7 @@ const pokemonController = require('./controllers/pokemonController');
 const usersController = require("./controllers/usersController");
 const decksController = require("./controllers/decksController");
 const itemsController = require("./controllers/itemsController");
+const bagsController = require("./controllers/bagsController");
 
 // CONFIGURATION
 const app = express();
@@ -16,6 +17,7 @@ app.use("/pokemon", pokemonController);
 app.use("/users", usersController);
 app.use("/decks", decksController);
 app.use("/items", itemsController);
+app.use("/bags", bagsController);
 
 // Routes are like event listeners in the browser
 // ROUTES

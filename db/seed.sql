@@ -3,7 +3,7 @@
 INSERT INTO users (
     email, uuid, has_chosen_starter, wins, losses
 ) VALUES 
-('icastillo@live.com', '7XzFvOUVS4eQHGI8ClxNbN7qY7b2', false, 0, 0)
+('icastillo@live.com', '7XzFvOUVS4eQHGI8ClxNbN7qY7b2', false, 0, 0) 
 ;
 
 INSERT INTO decks (
@@ -25,7 +25,7 @@ INSERT INTO items (
 ('ether', null, null, 10, 'Restores 10 pp')
 ;
 
-INSERT INTO user_items (
+INSERT INTO bags (
     user_id, item_id
 ) VALUES 
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 1),

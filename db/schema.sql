@@ -30,9 +30,9 @@ CREATE TABLE items (
     item_desc VARCHAR -- i.e. Potion: restore 20 hp
 );
 
-CREATE TABLE user_items (
+CREATE TABLE bags (
     id SERIAL PRIMARY KEY,
-    user_id VARCHAR,
+    user_id TEXT,
     item_id INT
 );
 

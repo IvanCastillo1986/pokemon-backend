@@ -34,7 +34,6 @@ const updateItem = async (id, item) => {
     return updatedItem;
 };
 
-// ToDo:  write query to add item to 
 
 
 module.exports = { getAllItems, getItem, createItem, deleteItem, updateItem };

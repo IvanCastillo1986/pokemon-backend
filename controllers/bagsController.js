@@ -1,6 +1,6 @@
 const express = require("express");
 const bags = express.Router();
-const { getAllBags, getBagItem, getBagByUserId, createBag, deleteBag, updateBag } = require("../queries/bags")
+const { getAllBags, getBagItems, getBagByUserId, createBagItem, deleteBag, updateBag } = require("../queries/bags")
 
 
 // INDEX
@@ -16,7 +16,7 @@ bags.get("/", async (req, res) => {
 
 // SHOW
 bags.get("/:id", async (req, res) => {
-    // Check if id is a String(uuid, getBagItem) or a Number(id, getBagByUserId)
+    // Check if id is a String(uuid, getBagItems) or a Number(id, getBagByUserId)
     const { id } = req.params;
 
     try {
@@ -24,7 +24,7 @@ bags.get("/:id", async (req, res) => {
             const bag = await getBagByUserId(id);
             res.status(200).json(bag);
         } else {
-            const bag = await getBagItem(id);
+            const bag = await getBagItems(id);
             res.status(200).json(bag);
         }
     } catch(err) {
@@ -33,12 +33,12 @@ bags.get("/:id", async (req, res) => {
 });
 
 // CREATE
+// bags.post("${API}/bags", bagItem)
 bags.post("/", async (req, res) => {
     const bagItem = req.body;
-    console.log(bagItem)
 
     try {
-        const newBagItem = await createBag(bagItem);
+        const newBagItem = await createBagItem(bagItem);
         res.status(200).json(newBagItem);
     } catch(err) {
         res.status(400).json({ error: err.message });
@@ -52,7 +52,6 @@ bags.delete("/:uuid", async (req, res) => {
 
     try {
         const deletedBag = await deleteBag(uuid);
-        console.log(deletedBag)
         res.status(200).json(deletedBag);
     } catch(err) {
         res.status(400).json({ error: err.message });

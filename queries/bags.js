@@ -6,13 +6,13 @@ const getAllBags = async () => {
     return allBags;
 };
 
-const getBagItem = async (id) => {
+const getBagItems = async (id) => {
     const oneBagItem = await db.one("SELECT * FROM bags WHERE id = $1", id);
     return oneBagItem;
 };
 
 const getBagByUserId = async (user_id) => {
-    const userBag = await db.any("SELECT * FROM bags WHERE user_id = $1", user_id);
+    const userBag = await db.any("SELECT item_id FROM bags WHERE user_id = $1", user_id);
     return userBag;
 };
 
@@ -20,7 +20,7 @@ const getBagByUserId = async (user_id) => {
 // ToDo:
 // gets used in usersController when creating a new user. 
 // creates a new bag item in Bags table when user signs up.
-const createBag = async (bag) => {
+const createBagItem = async (bag) => {
     const newBag = await db.one(
         "INSERT INTO bags (user_id, item_id) VALUES ($1, $2) RETURNING *",
         [bag.user_id, bag.item_id]
@@ -43,4 +43,4 @@ const updateBag = async (bagsId, bag) => {
 
 
 
-module.exports = { getAllBags, getBagItem, getBagByUserId, createBag, deleteBag, updateBag };
+module.exports = { getAllBags, getBagItems, getBagByUserId, createBagItem, deleteBag, updateBag };

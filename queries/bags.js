@@ -16,6 +16,17 @@ const getBagByUserId = async (user_id) => {
     return userBag;
 };
 
+// item: item_name, effect, hp_restored, pp_restored, item_desc
+// bag: user_id, item_id, quantity
+const getItemsInBag = async (user_id) => {
+    const itemAndBag = await db.any(
+        "SELECT * FROM items FULL OUTER JOIN bags ON bags.item_id = items.id \
+        WHERE bags.user_id = $1",
+        [user_id]
+    );
+    return itemAndBag;
+};
+
 
 // ToDo:
 // gets used in usersController when creating a new user. 
@@ -43,4 +54,4 @@ const updateBag = async (bagsId, bag) => {
 
 
 
-module.exports = { getAllBags, getBagItems, getBagByUserId, createBagItem, deleteBag, updateBag };
+module.exports = { getAllBags, getBagItems, getBagByUserId, getItemsInBag, createBagItem, deleteBag, updateBag };

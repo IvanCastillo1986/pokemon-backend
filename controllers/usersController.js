@@ -3,7 +3,7 @@ const users = express.Router();
 const { getAllUsers, getUser, createUser, updateUser, deleteUser } = require("../queries/users")
 const { getDecksById, createDeck, deleteDeck } = require("../queries/decks.js")
 const { getAllPokemonInDeck } = require("../queries/pokemon.js")
-const { createBagItem, getBagByUserId } = require("../queries/bags.js")
+const { createBagItem, getItemsInBag } = require("../queries/bags.js")
 const { getItem } = require("../queries/items.js");
 
 const { validateUrl } = require('../models/validations');
@@ -26,31 +26,21 @@ users.get("/", async (req, res) => {
 users.get("/:uuid", async (req, res) => {
     const { uuid } = req.params;
     let userPokemon;
-    const userItems = [];
+    let userItems;
 
     try {
         userPokemon = await getAllPokemonInDeck(uuid);
     } catch(err) {
-        res.status(500).json({ errorGettingDeckOrPokemon: err.message });
+        console.log('errorGettingDeckOrPokemon:', err.message);
     }
 
-    // Collect each item from the Promise into an items[{}, {}] array
-    // Then spread that array into userItems[{}, {}]
+    // ToDo: collect all of user's items by joining bags and items table ON user_items WHERE user_id = uuid
     try {
-        // Get bagItems first [{user_id, item_id}, ...]
-        const userBagIds = await getBagByUserId(uuid);
-
-        // create an array of Promises
-        const itemPromises = userBagIds.map(async ({item_id}) => {
-            const item = await getItem(item_id);
-            return item;
-        });
-        // execute Promises
-        const items = await Promise.all(itemPromises);
-        // spread Promises into userItems[{}, {}] for res
-        userItems.push(...items);
+        // Get bagIds first [{user_id, item_id}, ...] => [{item_id}, ...]
+        userItems = await getItemsInBag(uuid);
+        // NOTE: quantity of items will be calculated and converted back in front-end before POSTing to back-end
     } catch(err) {
-        res.status(500).json({ errorGettingUserBag: err.message });
+        console.log("errorGettingUserBag:", err.message);
     }
 
     try {
@@ -93,7 +83,8 @@ users.post("/", async (req, res) => {
 
         // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon in front-end
         // deck:  {id: 1, user_id: "7XzFvOUVS4eQHGI8ClxNbN7qY7b2", pokemon_id: 10, exp: 0, lvl: 1}
-        // pokemon: {id:10, name: "Caterpie"...} => {id:10, name: "Caterpie"..., exp: 0, lvl: 1}
+        // pokemon: {id:10, name: "Caterpie"...} 
+        // => {id:10, name: "Caterpie"..., exp: 0, lvl: 1}
 
         res.status(200).json({ 
             user: newUser, 
@@ -113,6 +104,7 @@ users.post("/", async (req, res) => {
 });
 
 // UPDATE
+// ToDo: invoke Bags queries which deletes items and adds new items
 users.put("/:uuid", async (req, res) => {
     const { uuid } = req.params;
     const user = req.body;

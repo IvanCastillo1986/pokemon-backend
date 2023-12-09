@@ -104,7 +104,6 @@ users.post("/", async (req, res) => {
 });
 
 // UPDATE
-// ToDo: invoke Bags queries which deletes items and adds new items
 users.put("/:uuid", async (req, res) => {
     const { uuid } = req.params;
     const user = req.body;
@@ -114,8 +113,9 @@ users.put("/:uuid", async (req, res) => {
         if (getPokemon) {
             const updatedUserPokemon = await getAllPokemonInDeck(uuid);
             const updatedUser = await updateUser(uuid, user);
+            const updatedItems = await getItemsInBag(uuid);
             
-            res.status(200).json({ updatedUser, updatedUserPokemon });
+            res.status(200).json({ updatedUser, updatedUserPokemon, updatedItems });
         } else {
             const updatedUser = await updateUser(uuid, user);
             res.status(200).json(updatedUser);

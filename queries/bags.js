@@ -17,7 +17,7 @@ const getBagByUserId = async (user_id) => {
 };
 
 // item: item_name, effect, hp_restored, pp_restored, item_desc
-// bag: user_id, item_id, quantity
+// bag: id, user_id, item_id, quantity
 const getItemsInBag = async (user_id) => {
     const itemAndBag = await db.any(
         "SELECT * FROM items FULL OUTER JOIN bags ON bags.item_id = items.id \
@@ -27,9 +27,6 @@ const getItemsInBag = async (user_id) => {
     return itemAndBag;
 };
 
-
-// ToDo:
-// gets used in usersController when creating a new user. 
 // creates a new bag item in Bags table when user signs up.
 const createBagItem = async (bag) => {
     const newBag = await db.one(
@@ -39,7 +36,14 @@ const createBagItem = async (bag) => {
     return newBag;
 };
 
-const deleteBag = async (user_id) => {
+// Only deletes one bagItem via bags.id
+const deleteBagItemByBagId = async (id) => {
+    const deletedBagItem = await db.one("DELETE FROM bags WHERE id = $1 RETURNING *", id);
+    return deletedBagItem;
+};
+
+// Deletes all items in a user's bag
+const deleteUserBag = async (user_id) => {
     const deletedBag = await db.any("DELETE FROM bags WHERE user_id = $1 RETURNING *", user_id);
     return deletedBag;
 };
@@ -54,4 +58,4 @@ const updateBag = async (bagsId, bag) => {
 
 
 
-module.exports = { getAllBags, getBagItems, getBagByUserId, getItemsInBag, createBagItem, deleteBag, updateBag };
+module.exports = { getAllBags, getBagItems, getBagByUserId, getItemsInBag, createBagItem, deleteBagItemByBagId, deleteUserBag, updateBag };

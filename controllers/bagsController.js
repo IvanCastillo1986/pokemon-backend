@@ -1,6 +1,6 @@
 const express = require("express");
 const bags = express.Router();
-const { getAllBags, getBagItems, getBagByUserId, createBagItem, deleteBag, updateBag } = require("../queries/bags")
+const { getAllBags, getBagItems, getBagByUserId, createBagItem, deleteBagItemByBagId, deleteUserBag, updateBag } = require("../queries/bags")
 
 
 // INDEX
@@ -49,10 +49,17 @@ bags.post("/", async (req, res) => {
 bags.delete("/:uuid", async (req, res) => {
     // Deletes all items from a User's bag
     const { uuid } = req.params;
+    // Deletes one item from a User's bag
+    const { bagId } = req.query;
 
     try {
-        const deletedBag = await deleteBag(uuid);
-        res.status(200).json(deletedBag);
+        if (bagId) {
+            const deletedBagItem = await deleteBagItemByBagId(bagId);
+            res.status(200).json(deletedBagItem);
+        } else {
+            const deletedBag = await deleteUserBag(uuid);
+            res.status(200).json(deletedBag);
+        }
     } catch(err) {
         res.status(400).json({ error: err.message });
     }

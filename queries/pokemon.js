@@ -29,5 +29,15 @@ const getAllPokemonInDeck = async (user_id) => {
     return allPokemonInDeck;
 };
 
+const getStarterInDeck = async (user_id, pokemon_id) => {
+    const starterInDeck = await db.one(
+        "SELECT * FROM pokemon \
+        LEFT JOIN decks ON pokemon.id = decks.pokemon_id \
+        WHERE decks.user_id = $1 AND decks.pokemon_id = $2",
+        [user_id, pokemon_id]
+    );
+    return starterInDeck;
+};
 
-module.exports = { getAllPokemon, getPokemon, deletePokemon, getAllPokemonInDeck };
+
+module.exports = { getAllPokemon, getPokemon, deletePokemon, getAllPokemonInDeck, getStarterInDeck };

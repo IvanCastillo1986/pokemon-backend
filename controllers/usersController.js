@@ -70,33 +70,32 @@ users.post("/", async (req, res) => {
     }
 
     // This adds a default potion to user's bag
+    // newBagItem = await createBagItem({user_id: user.uuid, item_id: 1})
     try {
-        const newBagItem = await createBagItem({user_id: user.uuid, item_id: 1});
-        res.status(200).json(newBagItem);
-    } catch(err) {
-        res.status(500).json({ errorCreatingNewBagItem: err.message });
-    }
-
-    try {
+        const newItem = await createBagItem({user_id: user.uuid, item_id: 1});
         const newUser = await createUser(user);
         const userPokemon = await getAllPokemonInDeck(newUser.uuid);
+        // console.log('userPokemon:', userPokemon)
 
         // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon in front-end
         // deck:  {id: 1, user_id: "7XzFvOUVS4eQHGI8ClxNbN7qY7b2", pokemon_id: 10, exp: 0, lvl: 1}
         // pokemon: {id:10, name: "Caterpie"...} 
         // => {id:10, name: "Caterpie"..., exp: 0, lvl: 1}
-
         res.status(200).json({ 
+            // status: 'OK',
             user: newUser, 
             userPokemon, 
-            userItems: {
-                "id": 1,
+            userItems: [
+                {
+                "id": newItem.id,
+                "item_id": 1,
                 "item_name": "potion",
                 "effect": null,
                 "hp_restored": 20,
                 "pp_restored": null,
                 "item_desc": "Restores 20 hp"
             }
+            ]
         });
     } catch(err) {
         res.status(400).json({ errorCreatingUser: err.message });
@@ -108,6 +107,14 @@ users.put("/:uuid", async (req, res) => {
     const { uuid } = req.params;
     const user = req.body;
     const { getPokemon } = req.query;
+    
+    /* ToDo:
+    add query to update every deck sent from front-end after user wins
+    After updating decks, THEN getAllPokemonInDeck()
+    decks from front-end come in an array, along with winningUser object
+    
+    Return deck data to front-end combined with Pokemon.
+    */
 
     try {
         if (getPokemon) {
@@ -138,7 +145,6 @@ users.delete("/:uuid", async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
-
 
 
 module.exports = users;

@@ -11,8 +11,18 @@ const getBagItems = async (id) => {
     return oneBagItem;
 };
 
+// Called in users.put()
 const getBagByUserId = async (user_id) => {
+    const userBag = await db.any("SELECT * FROM bags WHERE user_id = $1", user_id);
+    return userBag;
+};
+
+const getBagItemIdByUserId = async (user_id) => {
     const userBag = await db.any("SELECT item_id FROM bags WHERE user_id = $1", user_id);
+    return userBag;
+};
+const getBagIdsByUserId = async (user_id) => {
+    const userBag = await db.any("SELECT id FROM bags WHERE user_id = $1", user_id);
     return userBag;
 };
 
@@ -58,4 +68,5 @@ const updateBag = async (bagsId, bag) => {
 
 
 
-module.exports = { getAllBags, getBagItems, getBagByUserId, getItemsInBag, createBagItem, deleteBagItemByBagId, deleteUserBag, updateBag };
+module.exports = { getAllBags, getBagItems, getBagByUserId, getBagItemIdByUserId, getItemsInBag, 
+    getBagIdsByUserId, createBagItem, deleteBagItemByBagId, deleteUserBag, updateBag };

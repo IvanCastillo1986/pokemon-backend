@@ -1,6 +1,6 @@
 const express = require("express");
 const bags = express.Router();
-const { getAllBags, getBagItems, getBagByUserId, createBagItem, deleteBagItemByBagId, deleteUserBag, updateBag } = require("../queries/bags")
+const { getAllBags, getBagItems, getBagItemIdByUserId, createBagItem, deleteBagItemByBagId, deleteUserBag, updateBag } = require("../queries/bags")
 
 
 // INDEX
@@ -16,12 +16,12 @@ bags.get("/", async (req, res) => {
 
 // SHOW
 bags.get("/:id", async (req, res) => {
-    // Check if id is a String(uuid, getBagItems) or a Number(id, getBagByUserId)
+    // Check if id is a String(uuid, getBagItems) or a Number(id, getBagItemIdByUserId)
     const { id } = req.params;
 
     try {
         if (isNaN(id)) {
-            const bag = await getBagByUserId(id);
+            const bag = await getBagItemIdByUserId(id);
             res.status(200).json(bag);
         } else {
             const bag = await getBagItems(id);

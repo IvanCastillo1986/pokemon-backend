@@ -6,16 +6,15 @@ const getAllDecks = async () => {
     return allDecks;
 };
 
-const getDeck = async (uuid) => {
-    const oneDeck = await db.one("SELECT * FROM decks WHERE user_id = $1", uuid);
+const getDeck = async (id) => {
+    const oneDeck = await db.one("SELECT * FROM decks WHERE id = $1", id);
     return oneDeck;
 };
 
-const getDecksById = async (uuid) => {
-    const userDeck = await db.any("SELECT * FROM decks WHERE user_id = $1", uuid);
-    return userDeck;
+const getDeckByUserId = async (uuid) => {
+    const oneDeck = await db.one("SELECT * FROM decks WHERE user_id = $1", uuid);
+    return oneDeck;
 };
-
 
 // gets used in usersController when creating a new user. 
 // creates a new deck pokemon in Decks table for each pokemonId in array
@@ -38,8 +37,16 @@ const updateDeck = async (deckId, deck) => {
         [deck.uuid, deck.pokemon_id, deck.exp, deck.lvl, deckId]
     );
     return updatedDeck;
-}
+};
+
+const updateDeckWithGainedExp = async (deckId, exp) => {
+    const updatedDeck = await db.one(
+        "UPDATE decks SET exp=exp+$1 WHERE id=$2 RETURNING *",
+        [exp, deckId]
+    );
+    return updatedDeck;
+};
 
 
 
-module.exports = { getAllDecks, getDeck, getDecksById, createDeck, deleteDeck, updateDeck };
+module.exports = { getAllDecks, getDeck, getDeckByUserId, createDeck, deleteDeck, updateDeck, updateDeckWithGainedExp };

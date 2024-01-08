@@ -1,9 +1,9 @@
 const express = require("express");
 const users = express.Router();
 const { getAllUsers, getUser, createUser, updateUser, deleteUser } = require("../queries/users")
-const { getDecksById, createDeck, deleteDeck } = require("../queries/decks.js")
+const { createDeck, deleteDeck, updateDeck, updateDeckWithGainedExp } = require("../queries/decks.js")
 const { getAllPokemonInDeck } = require("../queries/pokemon.js")
-const { createBagItem, getItemsInBag } = require("../queries/bags.js")
+const { createBagItem, getItemsInBag, getBagIdsByUserId, deleteBagItemByBagId } = require("../queries/bags.js")
 const { getItem } = require("../queries/items.js");
 
 const { validateUrl } = require('../models/validations');
@@ -104,23 +104,30 @@ users.post("/", async (req, res) => {
 
 // UPDATE
 users.put("/:uuid", async (req, res) => {
+    // We call this from front-end at:  Arena.js - declareWinner()
     const { uuid } = req.params;
-    const user = req.body;
-    const { getPokemon } = req.query;
+    const { user, gainedExpObj, bagIdsFromGame } = req.body;
+    const { matchEnd } = req.query;
     
-    /* ToDo:
-    add query to update every deck sent from front-end after user wins
-    After updating decks, THEN getAllPokemonInDeck()
-    decks from front-end come in an array, along with winningUser object
-    
-    Return deck data to front-end combined with Pokemon.
-    */
-
     try {
-        if (getPokemon) {
+        if (matchEnd) {
+            // bagItem: { id, user_id, item_id, item_name, effect, hp_restored, pp_restored, item_desc }
+            const bagItemsFromTable = await getItemsInBag(uuid); // []
+
+            const updatedItems = [];
+            for (const item of bagItemsFromTable) {
+                if (bagIdsFromGame.includes(item.id)) {
+                    updatedItems.push(item);
+                } else {
+                    await deleteBagItemByBagId(item.id);
+                }
+            }
+            
+            for (const deckId in gainedExpObj) {
+                await updateDeckWithGainedExp(deckId, gainedExpObj[deckId])
+            }
             const updatedUserPokemon = await getAllPokemonInDeck(uuid);
             const updatedUser = await updateUser(uuid, user);
-            const updatedItems = await getItemsInBag(uuid);
             
             res.status(200).json({ updatedUser, updatedUserPokemon, updatedItems });
         } else {

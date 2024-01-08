@@ -16,11 +16,11 @@ decks.get("/", async (req, res) => {
 });
 
 // SHOW
-decks.get("/:uuid", async (req, res) => {
-    const { uuid } = req.params;
+decks.get("/:id", async (req, res) => {
+    const { id } = req.params;
 
     try {
-        const deck = await getDeck(uuid);
+        const deck = await getDeck(id);
         res.status(200).json(deck);
     } catch(err) {
         res.status(500).json({ error: err.message });
@@ -36,7 +36,6 @@ decks.post("/", async (req, res) => {
         if (getPokeInfo) {
             await createDeck(uuid, pokemonId);
             const pokemonAndDeck = await getStarterInDeck(uuid, pokemonId)
-            console.log(pokemonAndDeck)
             res.status(200).json(pokemonAndDeck)
         } else {
             const newDeck = await createDeck(uuid, pokemonId);

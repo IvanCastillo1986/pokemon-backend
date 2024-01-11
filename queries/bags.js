@@ -28,6 +28,7 @@ const getBagIdsByUserId = async (user_id) => {
 
 // item: item_name, effect, hp_restored, pp_restored, item_desc
 // bag: id, user_id, item_id, quantity
+// bagItem: { id, user_id, item_id, item_name, effect, hp_restored, pp_restored, item_desc }
 const getItemsInBag = async (user_id) => {
     const itemAndBag = await db.any(
         "SELECT * FROM items FULL OUTER JOIN bags ON bags.item_id = items.id \
@@ -39,6 +40,7 @@ const getItemsInBag = async (user_id) => {
 
 // creates a new bag item in Bags table when user signs up.
 const createBagItem = async (bag) => {
+    // console.log('bag in createBagItem')
     const newBag = await db.one(
         "INSERT INTO bags (user_id, item_id) VALUES ($1, $2) RETURNING *",
         [bag.user_id, bag.item_id]

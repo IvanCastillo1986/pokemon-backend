@@ -6,7 +6,6 @@ const { getAllPokemonInDeck } = require("../queries/pokemon.js")
 const { createBagItem, getItemsInBag, getBagIdsByUserId, deleteBagItemByBagId } = require("../queries/bags.js")
 const { getItem } = require("../queries/items.js");
 
-const { validateUrl } = require('../models/validations');
 
 
 // INDEX
@@ -75,7 +74,6 @@ users.post("/", async (req, res) => {
         const newItem = await createBagItem({user_id: user.uuid, item_id: 1});
         const newUser = await createUser(user);
         const userPokemon = await getAllPokemonInDeck(newUser.uuid);
-        // console.log('userPokemon:', userPokemon)
 
         // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon in front-end
         // deck:  {id: 1, user_id: "7XzFvOUVS4eQHGI8ClxNbN7qY7b2", pokemon_id: 10, exp: 0, lvl: 1}
@@ -104,28 +102,41 @@ users.post("/", async (req, res) => {
 
 // UPDATE
 users.put("/:uuid", async (req, res) => {
-    // We call this from front-end at:  Arena.js - declareWinner()
+    // We call this route from front-end at:  Arena.js - declareWinner()
     const { uuid } = req.params;
-    const { user, gainedExpObj, bagIdsFromGame } = req.body;
+    const { user, gainedExpObj, bagIdsFromGame, wonItemId } = req.body;
     const { matchEnd } = req.query;
     
     try {
         if (matchEnd) {
             // bagItem: { id, user_id, item_id, item_name, effect, hp_restored, pp_restored, item_desc }
-            const bagItemsFromTable = await getItemsInBag(uuid); // []
+            // Add the newly won item to bags table
+            const newBag = await createBagItem({user_id: uuid, item_id: wonItemId})
+            const newItem = await getItem(newBag.item_id)
+            const newBagItem = {...newItem, ...newBag}
 
+            // add new item to bagIdsFromGame
+            bagIdsFromGame.push(newBagItem.id)
+
+            // add bagItem to updatedItems array to return to user
             const updatedItems = [];
-            for (const item of bagItemsFromTable) {
-                if (bagIdsFromGame.includes(item.id)) {
-                    updatedItems.push(item);
+            
+            // get current items in bag
+            const itemsInBagFromTable = await getItemsInBag(uuid);
+            
+            // add each {...bag, ...item} that hasn't been used in game to updatedItems
+            for (const itemInBag of itemsInBagFromTable) {
+                if (bagIdsFromGame.includes(itemInBag.id)) {
+                    updatedItems.push(itemInBag);
                 } else {
-                    await deleteBagItemByBagId(item.id);
+                    await deleteBagItemByBagId(itemInBag.id);
                 }
             }
             
             for (const deckId in gainedExpObj) {
-                await updateDeckWithGainedExp(deckId, gainedExpObj[deckId])
+                await updateDeckWithGainedExp(deckId, gainedExpObj[deckId]);
             }
+
             const updatedUserPokemon = await getAllPokemonInDeck(uuid);
             const updatedUser = await updateUser(uuid, user);
             

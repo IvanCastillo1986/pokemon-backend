@@ -15,12 +15,24 @@ CREATE TABLE users (
 
 
 CREATE TABLE decks (
-    id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY, -- this forms the bridge between individual_pokemon_stats.deck_id and decks table
     user_id VARCHAR,
-    pokemon_id INT,
+    pokemon_id INT, -- this forms the bridge between the base_stat and individual_pokemon_stats
     exp INT DEFAULT 0, -- new properties, will be added to pokemon objects in front-end
     lvl INT DEFAULT 1 -- new properties, will be added back to decks row in back-end
 );
+
+CREATE TABLE dv (
+    id SERIAL PRIMARY KEY,
+    deck_id INT,
+    hp INT,
+    atk INT,
+    def INT,
+    special_atk INT,
+    special_def INT,
+    speed INT
+);
+
 
 CREATE TABLE pokemon (
     id SERIAL PRIMARY KEY,

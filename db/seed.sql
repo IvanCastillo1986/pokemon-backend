@@ -9,12 +9,23 @@ INSERT INTO users (
 INSERT INTO decks (
     user_id, pokemon_id, exp, lvl
 ) VALUES 
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 35, 152, 3),
+('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 35, 0, 1),
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 46, 0, 1),
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 100, 0, 1),
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 111, 0, 1),
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 21, 0, 1)
 ;
+
+INSERT INTO dv (
+    deck_id, hp, atk, def, special_atk, special_def, speed
+) VALUES 
+(1, 9, 2, 3, 1, 3, 4),
+(2, 7, 3, 1, 2, 2, 5),
+(3, 11, 2, 4, 2, 2, 3),
+(4, 12, 4, 1, 3, 1, 5),
+(5, 10, 1, 5, 2, 3, 2)
+;
+
 
 INSERT INTO items (
     item_name, effect, hp_restored, pp_restored, item_desc

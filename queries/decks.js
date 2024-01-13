@@ -47,6 +47,14 @@ const updateDeckWithGainedExp = async (deckId, exp) => {
     return updatedDeck;
 };
 
+const updateDeckWithCurrentExpAndLvl = async (deckObj) => {
+    const updatedDeck = await db.one(
+        "UPDATE decks SET exp=$1, lvl=$2 WHERE id=$3 RETURNING *",
+        [deckObj.exp, deckObj.lvl, deckObj.id]
+    );
+    return updatedDeck;
+};
 
 
-module.exports = { getAllDecks, getDeck, getDeckByUserId, createDeck, deleteDeck, updateDeck, updateDeckWithGainedExp };
+
+module.exports = { getAllDecks, getDeck, getDeckByUserId, createDeck, deleteDeck, updateDeck, updateDeckWithCurrentExpAndLvl };

@@ -1,7 +1,7 @@
 const express = require("express");
 const users = express.Router();
 const { getAllUsers, getUser, createUser, updateUser, deleteUser } = require("../queries/users")
-const { createDeck, deleteDeck, updateDeck, updateDeckWithGainedExp } = require("../queries/decks.js")
+const { createDeck, deleteDeck, updateDeckWithCurrentExpAndLvl } = require("../queries/decks.js")
 const { getAllPokemonInDeck } = require("../queries/pokemon.js")
 const { createBagItem, getItemsInBag, getBagIdsByUserId, deleteBagItemByBagId } = require("../queries/bags.js")
 const { getItem } = require("../queries/items.js");
@@ -104,9 +104,10 @@ users.post("/", async (req, res) => {
 users.put("/:uuid", async (req, res) => {
     // We call this route from front-end at:  Arena.js - declareWinner()
     const { uuid } = req.params;
-    const { user, gainedExpObj, bagIdsFromGame, wonItemId } = req.body;
+    // Add {deckObjToUpdate} below after it's being sent by front-end
+    const { user, bagIdsFromGame, wonItemId, deckArrToUpdate } = req.body;
     const { matchEnd } = req.query;
-    
+
     try {
         if (matchEnd) {
             // bagItem: { id, user_id, item_id, item_name, effect, hp_restored, pp_restored, item_desc }
@@ -133,8 +134,9 @@ users.put("/:uuid", async (req, res) => {
                 }
             }
             
-            for (const deckId in gainedExpObj) {
-                await updateDeckWithGainedExp(deckId, gainedExpObj[deckId]);
+            // updates applicable decks with exp and lvls in deck array
+            for (const deckObj of deckArrToUpdate) {
+                await updateDeckWithCurrentExpAndLvl(deckObj);
             }
 
             const updatedUserPokemon = await getAllPokemonInDeck(uuid);

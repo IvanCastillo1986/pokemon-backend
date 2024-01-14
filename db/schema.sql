@@ -22,7 +22,7 @@ CREATE TABLE decks (
     lvl INT DEFAULT 1 -- new properties, will be added back to decks row in back-end
 );
 
-CREATE TABLE dv (
+CREATE TABLE dvs (
     id SERIAL PRIMARY KEY,
     deck_id INT,
     hp INT,

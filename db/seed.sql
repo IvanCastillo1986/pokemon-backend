@@ -16,7 +16,7 @@ INSERT INTO decks (
 ('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 21, 0, 1)
 ;
 
-INSERT INTO dv (
+INSERT INTO dvs (
     deck_id, hp, atk, def, special_atk, special_def, speed
 ) VALUES 
 (1, 9, 2, 3, 1, 3, 4),

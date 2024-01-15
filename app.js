@@ -7,6 +7,7 @@ const usersController = require("./controllers/usersController");
 const decksController = require("./controllers/decksController");
 const itemsController = require("./controllers/itemsController");
 const bagsController = require("./controllers/bagsController");
+const dvsController = require("./controllers/dvsController")
 
 // CONFIGURATION
 const app = express();
@@ -18,6 +19,7 @@ app.use("/users", usersController);
 app.use("/decks", decksController);
 app.use("/items", itemsController);
 app.use("/bags", bagsController);
+app.use("/dvs", dvsController);
 
 // Routes are like event listeners in the browser
 // ROUTES

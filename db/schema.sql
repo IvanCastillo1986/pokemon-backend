@@ -25,12 +25,12 @@ CREATE TABLE decks (
 CREATE TABLE dvs (
     id SERIAL PRIMARY KEY,
     deck_id INT,
-    hp INT,
-    atk INT,
-    def INT,
-    special_atk INT,
-    special_def INT,
-    speed INT
+    hp_dv INT,
+    atk_dv INT,
+    def_dv INT,
+    special_atk_dv INT,
+    special_def_dv INT,
+    speed_dv INT
 );
 
 

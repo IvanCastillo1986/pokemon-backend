@@ -11,11 +11,16 @@ const getDv = async (id) => {
     return dv;
 };
 
+const getPokemonDvs = async (deckId) => {
+    const dv = await db.one("SELECT * FROM dvs WHERE deck_id = $1", deckId);
+    return dv;
+};
+
 const createDv = async (dv) => {
     const newDv = await db.one(
-        "INSERT INTO dvs (deck_id, hp, atk, def, special_atk, special_def, speed) \
+        "INSERT INTO dvs (deck_id, hp_dv, atk_dv, def_dv, special_atk_dv, special_def_dv, speed_dv) \
         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", 
-        [dv.deckId, dv.hp, dv.atk, dv.def, dv.special_atk, dv.special_def]
+        [dv.deckId, dv.hp_dv, dv.atk_dv, dv.def_dv, dv.special_atk_dv, dv.special_def_dv, dv.speed_dv]
     );
     return newDv;
 };
@@ -29,11 +34,11 @@ const updateDv = async (id, dv) => {
     const updatedDv = await db.one(
         "UPDATE dvs SET deck_id=$1, hp=$2, atk=$3, def=$4, special_atk=$5, special_def=$6, speed=$7 \
         WHERE id=$8 RETURNING *",
-        [dv.deckId, dv.hp, dv.atk, dv.def, dv.special_atk, dv.special_def, speed, id]
+        [dv.deckId, dv.hp, dv.atk, dv.def, dv.special_atk, dv.special_def, dv.speed, id]
     );
     return updatedDv;
 };
 
 
 
-module.exports = { getAllDvs, getDv, createDv, deleteDv, updateDv };
+module.exports = { getAllDvs, getDv, getPokemonDvs, createDv, deleteDv, updateDv };

@@ -1,6 +1,7 @@
 const express = require("express");
 const dvs = express.Router();
 const { getAllDvs, getDv, createDv, deleteDv, updateDv } = require("../queries/dvs");
+const { assignDVs } = require("../helpers/assignDVs")
 
 
 // Index
@@ -27,12 +28,38 @@ dvs.get("/:id", async (req, res) => {
 });
 
 // Create
+// Recieves pokemonArr, and creates DVs for each Pokemon in array
 dvs.post("/", async (req, res) => {
-    const dv = req.body;
+    const { fullDeck, dvs } = req.body;
 
     try {
-        const newDv = await createDv(dv);
-        res.status(200).json(newDv);
+        if (fullDeck) {
+            // assign random DVs to each Pokemon, then add DVs to
+            const pokemonDVs = [];
+            const createdDVs = [];
+            for (const pokemon of fullDeck) {
+                const dvObj = assignDVs(pokemon);
+                pokemonDVs.push(dvObj);
+            }
+            
+            for (const dvObj of pokemonDVs) {
+                const createdDV = await createDv(dvObj);
+                createdDVs.push(createdDV);
+            }
+            console.log('createdDVs', createdDVs)
+            console.log('pokemonDVs', pokemonDVs)
+            res.status(200).json(pokemonDVs);
+        } else if (Array.isArray(dvs)) {
+            const newDvsArr = [];
+            for (const dv of dvs) {
+                const newDv = await createDv(dv);
+                newDvsArr.push(newDv);
+            }
+            res.status(200).json(newDvsArr);
+        } else {
+            const newDv = await createDv(dvs);
+            res.status(200).json(newDv);
+        }
     } catch(err) {
         res.status(500).json({ errorCreatingDv: err.message });
     }

@@ -2,6 +2,8 @@ const express = require("express");
 const decks = express.Router();
 const { getAllDecks, getDeck, createDeck, deleteDeck, updateDeck } = require("../queries/decks");
 const { getStarterInDeck } = require("../queries/pokemon");
+const { assignDVs, raisePokemonStats } = require("../helpers/assignDVs.js");
+const { createDv } = require("../queries/dvs.js");
 
 
 // INDEX
@@ -36,6 +38,15 @@ decks.post("/", async (req, res) => {
         if (getPokeInfo) {
             await createDeck(uuid, pokemonId);
             const pokemonAndDeck = await getStarterInDeck(uuid, pokemonId)
+        
+            // create DVs and raise Pokemon's stats
+            const pokemonDVs = [];
+            const randomDVs = assignDVs(pokemonAndDeck);
+            const dv = await createDv(randomDVs);
+            pokemonDVs.push(dv);
+
+            raisePokemonStats([pokemonAndDeck], pokemonDVs);
+
             res.status(200).json(pokemonAndDeck)
         } else {
             const newDeck = await createDeck(uuid, pokemonId);

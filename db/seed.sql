@@ -3,27 +3,27 @@
 INSERT INTO users (
     email, uuid, has_chosen_starter, wins, losses
 ) VALUES 
-('icastillo@live.com', '7XzFvOUVS4eQHGI8ClxNbN7qY7b2', false, 0, 0) 
+('icastillo@live.com', 'cbKlbR2AZEgTtsdOaoSQvb991cH3', false, 0, 0) 
 ;
 
 INSERT INTO decks (
     user_id, pokemon_id, exp, lvl
 ) VALUES 
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 35, 0, 1),
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 46, 0, 1),
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 100, 0, 1),
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 111, 0, 1),
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 21, 0, 1)
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 35, 0, 1),
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 46, 0, 1),
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 100, 0, 1),
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 111, 0, 1),
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 21, 0, 1)
 ;
 
 INSERT INTO dvs (
-    deck_id, hp, atk, def, special_atk, special_def, speed
+    deck_id, hp_dv, atk_dv, def_dv, special_atk_dv, special_def_dv, speed_dv
 ) VALUES 
 (1, 9, 2, 3, 1, 3, 4),
 (2, 7, 3, 1, 2, 2, 5),
 (3, 11, 2, 4, 2, 2, 3),
 (4, 12, 4, 1, 3, 1, 5),
-(5, 10, 1, 5, 2, 3, 2)
+(5, 15, 1, 5, 2, 3, 2)
 ;
 
 
@@ -39,9 +39,9 @@ INSERT INTO items (
 INSERT INTO bags (
     user_id, item_id
 ) VALUES 
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 1),
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 1),
-('7XzFvOUVS4eQHGI8ClxNbN7qY7b2', 4)
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 1),
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 1),
+('cbKlbR2AZEgTtsdOaoSQvb991cH3', 4)
 ;
 
 INSERT INTO pokemon (

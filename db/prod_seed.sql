@@ -1,5 +1,3 @@
-\c pokemon_dev;
-
 INSERT INTO users (
     email, uuid, has_chosen_starter, wins, losses
 ) VALUES 

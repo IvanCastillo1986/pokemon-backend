@@ -36,7 +36,7 @@ users.get("/:uuid", async (req, res) => {
         const pokemonDVs = [];
         for (const pokemon of userPokemon) {
             const dv = await getPokemonDvs(pokemon.id);
-            pokemonDVs.push(dv)
+            pokemonDVs.push(dv);
         }
 
         raisePokemonStats(userPokemon, pokemonDVs);
@@ -49,56 +49,51 @@ users.get("/:uuid", async (req, res) => {
         userItems = await getItemsInBag(uuid);
         // NOTE: quantity of items will be calculated and converted back in front-end before POSTing to back-end
     } catch(err) {
-        console.log("errorGettingUserBag:", err.message);
+        console.log("errorGettingUserBag:", err);
     }
 
     try {
         const user = await getUser(uuid);
         res.status(200).json({ user, userPokemon, userItems });
     } catch(err) {
-        res.status(500).json({ errorGettingUser: err.message });
+        res.status(500).json({ errorGettingUser: err });
     }
 });
 
 // This creates a user with default item (potion) and creates permanent DVs for each newly created deck/pokemon
 users.post("/", async (req, res) => {
+
+
     // This not only creates a new user, but also create a new deck with random Pokemon for that user
     // Also adds new item (potion), and creates permanent DVs for each Pokemon
-    const user = req.body[0];
-    const starterDeckArr = req.body[1];
-    let pokemonDeckArr = [];
-
-    try {
-        for (let pokemonId of starterDeckArr) {
-            const pokemonAddedToDeck = await createDeck(user.uuid, pokemonId);
-            pokemonDeckArr.push(pokemonAddedToDeck);
-        }
-    } catch(err) {
-        // res.status(500).json({ errorAddingNewDeck: err.message });
-        console.log("errorAddingNewDeck:", err)
-    }
+    const user = req.body;
 
     // This adds a default potion to user's bag
     // newBagItem = await createBagItem({user_id: user.uuid, item_id: 1})
     try {
         const newItem = await createBagItem({user_id: user.uuid, item_id: 1});
+        console.log('newItem from Create User:', newItem)
         const newUser = await createUser(user);
-        const userPokemon = await getAllPokemonInDeck(newUser.uuid);
-        
-        // raise Pokemon's stats
-        const pokemonDVs = [];
-        for (const pokemon of userPokemon) {
-            const randomDVs = assignDVs(pokemon);
-            const dv = await createDv(randomDVs);
-            pokemonDVs.push(dv);
-        }
-        raisePokemonStats(userPokemon, pokemonDVs);
-
+        const userPokemon = []
 
         // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon in front-end
         // deck:  {id: 1, user_id: "7XzFvOUVS4eQHGI8ClxNbN7qY7b2", pokemon_id: 10, exp: 0, lvl: 1}
         // pokemon: {id:10, name: "Caterpie"...} 
         // => {id:10, name: "Caterpie"..., exp: 0, lvl: 1}
+        console.log('created new user at Register.js:', { 
+            user: newUser, 
+            userPokemon, 
+            userItems: [{
+                "id": newItem.id,
+                "item_id": 1,
+                "item_name": "potion",
+                "effect": null,
+                "hp_restored": 20,
+                "pp_restored": null,
+                "item_desc": "Restores 20 hp"
+            }]
+        })
+        
         res.status(200).json({ 
             // status: 'OK',
             user: newUser, 
@@ -112,18 +107,75 @@ users.post("/", async (req, res) => {
                 "hp_restored": 20,
                 "pp_restored": null,
                 "item_desc": "Restores 20 hp"
-            }
+                }
             ]
         });
     } catch(err) {
         // res.status(400).json({ errorCreatingUser: err.message });
         console.log("errorCreatingUser:", err)
     }
+// OLD WAY OF CREATING USER FROM OLD APP STRUCTURE 
+//     // This not only creates a new user, but also create a new deck with random Pokemon for that user
+//     // Also adds new item (potion), and creates permanent DVs for each Pokemon
+//     const user = req.body[0];
+//     const starterDeckArr = req.body[1];
+//     let pokemonDeckArr = [];
+
+//     try {
+//         for (let pokemonId of starterDeckArr) {
+//             const pokemonAddedToDeck = await createDeck(user.uuid, pokemonId);
+//             pokemonDeckArr.push(pokemonAddedToDeck);
+//         }
+//     } catch(err) {
+//         // res.status(500).json({ errorAddingNewDeck: err.message });
+//         console.log("errorAddingNewDeck:", err)
+//     }
+
+//     // This adds a default potion to user's bag
+//     // newBagItem = await createBagItem({user_id: user.uuid, item_id: 1})
+//     try {
+//         const newItem = await createBagItem({user_id: user.uuid, item_id: 1});
+//         const newUser = await createUser(user);
+//         const userPokemon = await getAllPokemonInDeck(newUser.uuid);
+        
+//         // raise Pokemon's stats
+//         const pokemonDVs = [];
+//         for (const pokemon of userPokemon) {
+//             const randomDVs = assignDVs(pokemon);
+//             const dv = await createDv(randomDVs);
+//             pokemonDVs.push(dv);
+//         }
+//         raisePokemonStats(userPokemon, pokemonDVs);
+
+
+//         // the deck's exp/lvl properties from pokemonDeckArr are attacked to each pokemon in front-end
+//         // deck:  {id: 1, user_id: "7XzFvOUVS4eQHGI8ClxNbN7qY7b2", pokemon_id: 10, exp: 0, lvl: 1}
+//         // pokemon: {id:10, name: "Caterpie"...} 
+//         // => {id:10, name: "Caterpie"..., exp: 0, lvl: 1}
+//         res.status(200).json({ 
+//             // status: 'OK',
+//             user: newUser, 
+//             userPokemon, 
+//             userItems: [
+//                 {
+//                 "id": newItem.id,
+//                 "item_id": 1,
+//                 "item_name": "potion",
+//                 "effect": null,
+//                 "hp_restored": 20,
+//                 "pp_restored": null,
+//                 "item_desc": "Restores 20 hp"
+//             }
+//             ]
+//         });
+//     } catch(err) {
+//         // res.status(400).json({ errorCreatingUser: err.message });
+//         console.log("errorCreatingUser:", err)
+//     }
 });
 
 // UPDATE
 users.put("/:uuid", async (req, res) => {
-    // console.log('reaching users.put')
     // We call this route from front-end at:  Arena.js - declareWinner()
     const { uuid } = req.params;
     // Add {deckObjToUpdate} below after it's being sent by front-end
@@ -178,10 +230,11 @@ users.put("/:uuid", async (req, res) => {
             res.status(200).json({ user, userPokemon, userItems });
         } else {
             const user = await updateUser(uuid, userToUpdate);
+            console.log('user at end of .put():', user)
             res.status(200).json(user);
         }
     } catch(err) {
-        res.status(400).json({ errorUpdatingUser: err.message });
+        res.status(400).json({ errorUpdatingUser: err });
     }
 });
 
@@ -195,7 +248,7 @@ users.delete("/:uuid", async (req, res) => {
         const deletedUser = await deleteUser(uuid);
         res.status(200).json({ deletedUser, deletedDeck });
     } catch(err) {
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ error: err });
     }
 });
 

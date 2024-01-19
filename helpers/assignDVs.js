@@ -45,8 +45,7 @@ const calculateRaisedStats = (pokemon, dvs) => {
 
 
 function raisePokemonStats(deck, pokemonDVs) {
-    // console.log('raisePokemonStats deck', deck)
-    // console.log('raisePokemonStats pokemonDVs', pokemonDVs)
+
     deck.forEach((pokemon) => {
         const matchingDvObj = pokemonDVs.find(dvObj => dvObj.deck_id === pokemon.id)
         calculateRaisedStats(pokemon, matchingDvObj)

@@ -40,7 +40,6 @@ const getItemsInBag = async (user_id) => {
 
 // creates a new bag item in Bags table when user signs up.
 const createBagItem = async (bag) => {
-    // console.log('bag in createBagItem')
     const newBag = await db.one(
         "INSERT INTO bags (user_id, item_id) VALUES ($1, $2) RETURNING *",
         [bag.user_id, bag.item_id]

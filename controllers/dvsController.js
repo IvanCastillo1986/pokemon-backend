@@ -46,8 +46,6 @@ dvs.post("/", async (req, res) => {
                 const createdDV = await createDv(dvObj);
                 createdDVs.push(createdDV);
             }
-            console.log('createdDVs', createdDVs)
-            console.log('pokemonDVs', pokemonDVs)
             res.status(200).json(pokemonDVs);
         } else if (Array.isArray(dvs)) {
             const newDvsArr = [];

@@ -1,7 +1,7 @@
 const express = require("express");
 const decks = express.Router();
 const { getAllDecks, getDeck, createDeck, deleteDeck, updateDeck } = require("../queries/decks");
-const { getStarterInDeck } = require("../queries/pokemon");
+const { getStarterInDeck, getAllPokemonInDeck } = require("../queries/pokemon");
 const { assignDVs, raisePokemonStats } = require("../helpers/assignDVs.js");
 const { createDv } = require("../queries/dvs.js");
 
@@ -31,23 +31,36 @@ decks.get("/:id", async (req, res) => {
 
 // CREATE
 decks.post("/", async (req, res) => {
-    const { uuid, pokemonId } = req.body;
+    const { uuid, userDeckIds } = req.body;
     const { getPokeInfo } = req.query;
 
+    // ToDo: refactor this route to create decks for each pokemon_id, create dvs, and return {...pokemon, ...deck}
     try {
         if (getPokeInfo) {
-            await createDeck(uuid, pokemonId);
-            const pokemonAndDeck = await getStarterInDeck(uuid, pokemonId)
-        
-            // create DVs and raise Pokemon's stats
+            console.log('inside decks.post getPokeInfo')
+
+            // first create all decks
+            for (const pokeId of userDeckIds) {
+                await createDeck(uuid, pokeId);
+            }
+
+            // then getAllPokemonInDeck
+            const allPokemonInDeck = await getAllPokemonInDeck(uuid)
+            
+            // then, create dvs for all Pokemon
             const pokemonDVs = [];
-            const randomDVs = assignDVs(pokemonAndDeck);
-            const dv = await createDv(randomDVs);
-            pokemonDVs.push(dv);
+            for (const pokemon of allPokemonInDeck) {
+                // create DVs and raise Pokemon's stats
+                const randomDVs = assignDVs(pokemon);
+                const dv = await createDv(randomDVs);
+                pokemonDVs.push(dv);
+            }
 
-            raisePokemonStats([pokemonAndDeck], pokemonDVs);
+            // then raise Pokemon stats before returning
+            raisePokemonStats(allPokemonInDeck, pokemonDVs);
 
-            res.status(200).json(pokemonAndDeck)
+            console.log('allPokemonInDeck:', allPokemonInDeck)
+            res.status(200).json(allPokemonInDeck);
         } else {
             const newDeck = await createDeck(uuid, pokemonId);
             res.status(200).json(newDeck);

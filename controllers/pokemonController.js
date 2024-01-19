@@ -6,20 +6,40 @@ const { getAllPokemon, getPokemon, deletePokemon, getAllPokemonInDeck } = requir
 // Index
 pokemon.get("/", async (req, res) => {
 
-    const { uuid } = req.query;
-    
+    // if I don't render this conditionally, it will break the server because JSON.parse will be used on undefined
+    const userDeckIds = req.query.userDeckIds ? JSON.parse(req.query.userDeckIds) : null;
+    const { uuid, getEnemyDeck } = req.query;
+
     try {
-        // axios.get(`${API}/pokemon?uuid=${user.currentUser.uuid}`)
-        // www.api/pokemon?uuid=7XzFvOUVS4eQHGI8ClxNbN7qY7b2
-        if (uuid) {
+        if (userDeckIds) {
+            const initialPokemon = [];
+            
+            for (const id of userDeckIds) {
+                const pokemon = await getPokemon(id);
+                initialPokemon.push(pokemon);
+            }
+
+            res.status(200).json(initialPokemon);
+        } else if (uuid) {
             const allPokemonInDeck = await getAllPokemonInDeck(uuid);
+            
             res.status(200).json(allPokemonInDeck);
+        } else if (getEnemyDeck) {
+            const enemyDeck = [];
+            
+            for (const id of enemyDeckIds) {
+                const pokemon = await getPokemon(id);
+                enemyDeck.push(pokemon)
+            }
+
+            res.status(200).json(enemyDeck);
         } else {
             const allPokemon = await getAllPokemon();
+
             res.status(200).json(allPokemon);
         }
     } catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err });
     }
 });
 

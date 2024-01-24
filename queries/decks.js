@@ -39,14 +39,6 @@ const updateDeck = async (deckId, deck) => {
     return updatedDeck;
 };
 
-const updateDeckWithGainedExp = async (deckId, exp) => {
-    const updatedDeck = await db.one(
-        "UPDATE decks SET exp=exp+$1 WHERE id=$2 RETURNING *",
-        [exp, deckId]
-    );
-    return updatedDeck;
-};
-
 const updateDeckWithCurrentExpAndLvl = async (deckObj) => {
     const updatedDeck = await db.one(
         "UPDATE decks SET exp=$1, lvl=$2 WHERE id=$3 RETURNING *",

@@ -7,32 +7,23 @@ const { getAllPokemon, getPokemon, deletePokemon, getAllPokemonInDeck } = requir
 pokemon.get("/", async (req, res) => {
 
     // if I don't render this conditionally, it will break the server because JSON.parse will be used on undefined
-    const userDeckIds = req.query.userDeckIds ? JSON.parse(req.query.userDeckIds) : null;
-    const { uuid, getEnemyDeck } = req.query;
+    const pokemonIds = req.query.pokemonIds ? JSON.parse(req.query.pokemonIds) : null;
+    const { uuid } = req.query;
 
     try {
-        if (userDeckIds) {
-            const initialPokemon = [];
+        if (pokemonIds) {
+            const pokemonArr = [];
             
-            for (const id of userDeckIds) {
+            for (const id of pokemonIds) {
                 const pokemon = await getPokemon(id);
-                initialPokemon.push(pokemon);
+                pokemonArr.push(pokemon);
             }
 
-            res.status(200).json(initialPokemon);
+            res.status(200).json(pokemonArr);
         } else if (uuid) {
             const allPokemonInDeck = await getAllPokemonInDeck(uuid);
             
             res.status(200).json(allPokemonInDeck);
-        } else if (getEnemyDeck) {
-            const enemyDeck = [];
-            
-            for (const id of enemyDeckIds) {
-                const pokemon = await getPokemon(id);
-                enemyDeck.push(pokemon)
-            }
-
-            res.status(200).json(enemyDeck);
         } else {
             const allPokemon = await getAllPokemon();
 

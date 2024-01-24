@@ -1,7 +1,7 @@
 const express = require("express");
 const decks = express.Router();
 const { getAllDecks, getDeck, createDeck, deleteDeck, updateDeck } = require("../queries/decks");
-const { getStarterInDeck, getAllPokemonInDeck } = require("../queries/pokemon");
+const { getAllPokemonInDeck } = require("../queries/pokemon");
 const { assignDVs, raisePokemonStats } = require("../helpers/assignDVs.js");
 const { createDv } = require("../queries/dvs.js");
 
@@ -34,23 +34,21 @@ decks.post("/", async (req, res) => {
     const { uuid, userDeckIds } = req.body;
     const { getPokeInfo } = req.query;
 
-    // ToDo: refactor this route to create decks for each pokemon_id, create dvs, and return {...pokemon, ...deck}
     try {
         if (getPokeInfo) {
-            console.log('inside decks.post getPokeInfo')
-
-            // first create all decks
+            
+            // first create all decks in db
             for (const pokeId of userDeckIds) {
                 await createDeck(uuid, pokeId);
             }
 
-            // then getAllPokemonInDeck
+            // then get pokemon and deck data
             const allPokemonInDeck = await getAllPokemonInDeck(uuid)
             
             // then, create dvs for all Pokemon
             const pokemonDVs = [];
             for (const pokemon of allPokemonInDeck) {
-                // create DVs and raise Pokemon's stats
+                // create DVs to raise Pokemon's stats
                 const randomDVs = assignDVs(pokemon);
                 const dv = await createDv(randomDVs);
                 pokemonDVs.push(dv);
@@ -59,7 +57,6 @@ decks.post("/", async (req, res) => {
             // then raise Pokemon stats before returning
             raisePokemonStats(allPokemonInDeck, pokemonDVs);
 
-            console.log('allPokemonInDeck:', allPokemonInDeck)
             res.status(200).json(allPokemonInDeck);
         } else {
             const newDeck = await createDeck(uuid, pokemonId);

@@ -26,9 +26,9 @@ const deleteUser = async (uuid) => {
 
 const updateUser = async (uuid, user) => {
     const updatedUser = await db.one(
-        "UPDATE users SET email=$1, uuid=$5, has_chosen_starter=$2, wins=$3, losses=$4 \
-        WHERE uuid=$5 RETURNING *",
-        [user.email, user.has_chosen_starter, user.wins, user.losses, uuid]
+        "UPDATE users SET email=$1, uuid=$4, wins=$2, losses=$3 \
+        WHERE uuid=$4 RETURNING *",
+        [user.email, user.wins, user.losses, uuid]
     );
     return updatedUser;
 }

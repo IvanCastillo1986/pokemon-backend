@@ -10,7 +10,7 @@ const cn = {
 };
 const connectionString = process.env.CONNECTION_STRING
 
-const db = pgp(cn);
+const db = pgp(connectionString);
 
 
 module.exports = db;

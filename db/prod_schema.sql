@@ -5,7 +5,6 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email TEXT,
     uuid TEXT,
-    has_chosen_starter BOOLEAN DEFAULT false,
     wins INT DEFAULT 0,
     losses INT DEFAULT 0
 );

@@ -6,7 +6,7 @@ const { getAllPokemonInDeck } = require("../queries/pokemon.js")
 const { createBagItem, getItemsInBag, deleteBagItemByBagId } = require("../queries/bags.js")
 const { getItem } = require("../queries/items.js");
 const { getPokemonDvs, createDv} = require("../queries/dvs.js")
-const { assignDVs, raisePokemonStats } = require("../helpers/assignDVs.js")
+const { assignDVs } = require("../helpers/assignDVs.js")
 
 
 
@@ -38,7 +38,6 @@ users.get("/:uuid", async (req, res) => {
             pokemon.pokemonDVs = await getPokemonDvs(pokemon.id);
         }
 
-        // raisePokemonStats(userPokemon);
     } catch(err) {
         console.log('errorGettingDeckOrPokemon:', err);
     }
@@ -62,7 +61,6 @@ users.get("/:uuid", async (req, res) => {
 // This creates a user with default item (potion) and creates permanent DVs for each newly created deck/pokemon
 users.post("/", async (req, res) => {
 
-
     // This not only creates a new user, but also create a new deck with random Pokemon for that user
     // Also adds new item (potion), and creates permanent DVs for each Pokemon
     const user = req.body;
@@ -74,19 +72,19 @@ users.post("/", async (req, res) => {
         const newUser = await createUser(user);
         const userPokemon = [];
 
-        console.log('created new user at <Register />:', { 
-            user: newUser, 
-            userPokemon, 
-            userItems: [{
-                "id": newItem.id,
-                "item_id": 1,
-                "item_name": "potion",
-                "effect": null,
-                "hp_restored": 20,
-                "pp_restored": null,
-                "item_desc": "Restores 20 hp"
-            }]
-        })
+        // console.log('created new user at <Register />:', { 
+        //     user: newUser, 
+        //     userPokemon, 
+        //     userItems: [{
+        //         "id": newItem.id,
+        //         "item_id": 1,
+        //         "item_name": "potion",
+        //         "effect": null,
+        //         "hp_restored": 20,
+        //         "pp_restored": null,
+        //         "item_desc": "Restores 20 hp"
+        //     }]
+        // })
         
         res.status(200).json({ 
             user: newUser, 
@@ -112,7 +110,7 @@ users.post("/", async (req, res) => {
 users.put("/:uuid", async (req, res) => {
     // if we're calling from declareWinner:
         // we're removing and adding items
-        // updating decks with exp
+        // updating decks with exp (if user won)
         // getting pokemon, DVs and converting Pokemon
     // if we're calling from <Deck />
         // we're adding current ids to Deck 
@@ -120,13 +118,11 @@ users.put("/:uuid", async (req, res) => {
         // getting Pokemon
         // getting items
     const { uuid } = req.params;
-    // Add {deckObjToUpdate} below after it's being sent by front-end
     const { userToUpdate, bagIdsFromGame, wonItemId, deckArrToUpdate, pokemonIds } = req.body;
     const { matchEnd } = req.query;
 
     try {
-        if (pokemonIds) {
-            // This route creates the rest of user data (deck, pokemonDVs, etc.)
+        if (pokemonIds) { // creates the rest of user data from <Deck /> (deck, pokemonDVs, etc.)
             
             // creates new user decks, then gets new pokemon+decks
             for (const pokeId of pokemonIds) {
@@ -142,15 +138,19 @@ users.put("/:uuid", async (req, res) => {
             
             // console.log('returning user to <Decks />:', {user: userToUpdate, userPokemon, userItems})
             res.status(200).json({user: userToUpdate, userPokemon, userItems});
-        } else if (matchEnd) {
-            // bagItem: { id, user_id, item_id, item_name, effect, hp_restored, pp_restored, item_desc }
-            // Add the newly won item to bags table
-            const newBag = await createBagItem({user_id: uuid, item_id: wonItemId});
-            const newItem = await getItem(newBag.item_id);
-            const newBagItem = {...newItem, ...newBag};
-
-            // add new item to bagIdsFromGame
-            bagIdsFromGame.push(newBagItem.id);
+        } else if (matchEnd) { // coming from Player winning or losing
+            
+            if (wonItemId) {
+                // bagItem: { id, user_id, item_id, item_name, effect, hp_restored, pp_restored, item_desc }
+                // Add the newly won item to bags table
+                const newBag = await createBagItem({user_id: uuid, item_id: wonItemId});
+                const newItem = await getItem(newBag.item_id);
+                const newBagItem = {...newItem, ...newBag};
+                
+                // add new item to bagIdsFromGame
+                bagIdsFromGame.push(newBagItem.id);
+                // console.log('created new Item')
+            }
 
             // add bagItem to userItems array to return to user
             const userItems = [];
@@ -167,10 +167,12 @@ users.put("/:uuid", async (req, res) => {
                 }
             }
 
-
-            // updates applicable decks with exp and lvls in deck array
-            for (const deckObj of deckArrToUpdate) {
-                await updateDeckWithCurrentExpAndLvl(deckObj);
+            if (deckArrToUpdate) {
+                // updates applicable decks with exp and lvls in deck array
+                for (const deckObj of deckArrToUpdate) {
+                    await updateDeckWithCurrentExpAndLvl(deckObj);
+                }
+                // console.log('updated deck exp')
             }
 
             const user = await updateUser(uuid, userToUpdate);

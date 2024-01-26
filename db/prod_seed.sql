@@ -1,7 +1,7 @@
 INSERT INTO users (
-    email, uuid, has_chosen_starter, wins, losses
+    email, uuid, wins, losses
 ) VALUES 
-('icastillo@live.com', 'oK5mG1tBDDUkGnIC9mrtHb0Ge673', false, 0, 0) 
+('icastillo@live.com', 'oK5mG1tBDDUkGnIC9mrtHb0Ge673', 0, 0) 
 ;
 
 INSERT INTO decks (
@@ -11,7 +11,8 @@ INSERT INTO decks (
 ('oK5mG1tBDDUkGnIC9mrtHb0Ge673', 46, 0, 1),
 ('oK5mG1tBDDUkGnIC9mrtHb0Ge673', 100, 0, 1),
 ('oK5mG1tBDDUkGnIC9mrtHb0Ge673', 111, 0, 1),
-('oK5mG1tBDDUkGnIC9mrtHb0Ge673', 21, 0, 1)
+('oK5mG1tBDDUkGnIC9mrtHb0Ge673', 21, 0, 1),
+('oK5mG1tBDDUkGnIC9mrtHb0Ge673', 7, 0, 1)
 ;
 
 INSERT INTO dvs (
@@ -21,7 +22,8 @@ INSERT INTO dvs (
 (2, 7, 3, 1, 2, 2, 5),
 (3, 11, 2, 4, 2, 2, 3),
 (4, 12, 4, 1, 3, 1, 5),
-(5, 15, 1, 5, 2, 3, 2)
+(5, 15, 1, 5, 2, 3, 2),
+(6, 10, 12, 13, 6, 8, 13)
 ;
 
 
